@@ -1,0 +1,29 @@
+alias: Motion Feed on LG TV with Scene Restore
+description: Show DVR motion feed on LG TV and restore previous state
+triggers:
+  - entity_id: binary_sensor.embedded_net_dvr_motion_alarm
+    to: "on"
+    trigger: state
+conditions:
+  - condition: state
+    entity_id: media_player.lg_webos_smart_tv
+    state: "on"
+actions:
+  - data:
+      scene_id: tv_lg_history
+      snapshot_entities:
+        - media_player.lg_webos_smart_tv
+    action: scene.create
+  - data:
+      entity_id: media_player.lg_webos_smart_tv
+      command: system.launcher/open
+      payload:
+        target: #INPUT#HERE#YOUR#mp4STREAM
+    action: webostv.command
+  - delay:
+      seconds: 25
+  - target:
+      entity_id: scene.tv_lg_history
+    action: scene.turn_on
+    data: {}
+mode: single
